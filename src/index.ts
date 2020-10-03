@@ -99,7 +99,8 @@ program
   .command('refresh')
   .description('Adds next episodes of subscribed shows, if available')
   .action(async () => {
-    // TODO
+    // TODO: For each show without an unwatched item in the list,
+    // check for a next episode and add if available
   })
 
 program
@@ -108,6 +109,9 @@ program
   .action(async (id: string) => {
     let data = await appData.loadData(CONFIG_PATH)
     data.watchList.splice(parseInt(id), 1)
+
+    // TODO: Get next episode for the show, if it's a show, add it to the list
+
     await appData.saveData(CONFIG_PATH, data)
   })
 
