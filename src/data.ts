@@ -21,7 +21,7 @@ export interface TvShow {
 }
 
 interface WatchItem {
-  tmdbId?: number,
+  showTmdbId?: number,
   name: string,
 }
 

@@ -1,5 +1,5 @@
 import { program } from 'commander'
-import { uniqBy, filter } from 'lodash'
+import { uniqBy, filter, padStart } from 'lodash'
 import * as path from 'path'
 import * as tmdb from './tmdb'
 import * as appData from './data'
@@ -59,6 +59,13 @@ program
     // TODO: This currently will overwrite an already subscribed show, which means
     // it could lose the current season/episode. Fix that!
     data.shows = uniqBy([show, ...data.shows], (i) => i.tmdbId)
+
+    const pad = (n: number): string => padStart(n.toString(), 2, '0')
+    data.watchList.push({
+      showTmdbId: tmdbId,
+      name: `${name} (S${pad(season)}E${pad(episode)})`
+    })
+
     await appData.saveData(CONFIG_PATH, data)
   })
 
@@ -76,7 +83,7 @@ program
   .description('Show entire watchlist')
   .action(async () => {
     let { watchList } = await appData.loadData(CONFIG_PATH)
-    watchList.forEach(i => console.log(i.name))
+    watchList.forEach((i, idx)  => console.log(`[${idx}] ${i.name}`))
   })
 
 program
@@ -91,6 +98,13 @@ program
 program
   .command('refresh')
   .description('Adds next episodes of subscribed shows, if available')
+  .action(async () => {
+    // TODO
+  })
+
+program
+  .command('watched <id>')
+  .description('Mark an item from the watch list as watched, grab next episode if applicable')
   .action(async () => {
     // TODO
   })
