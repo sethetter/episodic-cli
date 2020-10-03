@@ -105,8 +105,10 @@ program
 program
   .command('watched <id>')
   .description('Mark an item from the watch list as watched, grab next episode if applicable')
-  .action(async () => {
-    // TODO
+  .action(async (id: string) => {
+    let data = await appData.loadData(CONFIG_PATH)
+    data.watchList.splice(parseInt(id), 1)
+    await appData.saveData(CONFIG_PATH, data)
   })
 
 program.parse(process.argv)
