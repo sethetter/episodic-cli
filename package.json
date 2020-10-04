@@ -14,7 +14,7 @@
     "prepare": "npm run build"
   },
   "bin": {
-    "episodic": "node ./dist/index.js"
+    "episodic": "./bin/episodic"
   },
   "author": "Seth Etter <mail@sethetter.com>",
   "license": "ISC",

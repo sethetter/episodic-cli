@@ -142,4 +142,4 @@ program
     await appData.saveData(CONFIG_PATH, data)
   })
 
-program.parse(process.argv)
+module.exports = () => program.parse(process.argv)
