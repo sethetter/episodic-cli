@@ -1,7 +1,7 @@
 {
   "name": "episodic-cli",
   "version": "0.0.1",
-  "description": "",
+  "description": "A CLI for managing the things you watch",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
@@ -12,7 +12,7 @@
   "bin": {
     "episodic": "./dist/index.js"
   },
-  "author": "",
+  "author": "Seth Etter <mail@sethetter.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/commander": "^2.12.2",
