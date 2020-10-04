@@ -1,6 +1,6 @@
 {
   "name": "episodic-cli",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A CLI for managing the things you watch",
   "repository": {
     "type": "git",
