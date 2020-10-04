@@ -1,5 +1,5 @@
 import { program } from 'commander'
-import { uniqBy, filter, padStart } from 'lodash'
+import { uniqBy, filter, findIndex } from 'lodash'
 import * as path from 'path'
 import * as tmdb from './tmdb'
 import * as appData from './data'
@@ -40,15 +40,26 @@ program
   .command('sub <tmdbId> [season] [episode]')
   .description('Subscribe to a TV show by TMDB ID')
   .action(async (
-    tmdbId: number,
-    season: number | undefined,
-    episode: number | undefined
+    tmdbIdStr: string,
+    seasonStr: string | undefined,
+    episodeStr: string | undefined
   ) => {
+    let tmdbId = parseInt(tmdbIdStr)
+    let season, episode
+
     let data = await appData.loadData(CONFIG_PATH)
     let { id, name } = await tmdb.getTv(data.tmdbApiKey, tmdbId)
 
-    if (!season) season = 1
-    if (!episode) episode = 1
+    if (seasonStr) {
+      season = parseInt(seasonStr)
+    } else {
+      season = 1
+    }
+    if (episodeStr) {
+      episode = parseInt(episodeStr)
+    } else {
+      episode = 1
+    }
 
     let show: appData.TvShow = {
       tmdbId: id,
@@ -60,11 +71,10 @@ program
     // it could lose the current season/episode. Fix that!
     data.shows = uniqBy([show, ...data.shows], (i) => i.tmdbId)
 
-    const pad = (n: number): string => padStart(n.toString(), 2, '0')
-    data.watchList.push({
-      showTmdbId: tmdbId,
-      name: `${name} (S${pad(season)}E${pad(episode)})`
-    })
+    data.watchList = data.watchList.filter(i => !i.showTmdbId || i.showTmdbId !== id)
+    data.watchList.push(
+      appData.watchListItemFromShow(show.tmdbId, show.name, season, episode)
+    )
 
     await appData.saveData(CONFIG_PATH, data)
   })
@@ -104,16 +114,32 @@ program
   })
 
 program
-  .command('watched <id>')
+  .command('watched <idx>')
   .description('Mark an item from the watch list as watched, grab next episode if applicable')
-  .action(async (id: string) => {
+  .action(async (idxStr: string) => {
     let data = await appData.loadData(CONFIG_PATH)
-    data.watchList.splice(parseInt(id), 1)
 
-    // TODO: Get next episode for the show, if it's a show, add it to the list
+    let idx = parseInt(idxStr)
+    let ep = data.watchList[idx]
+
+    data.watchList.splice(idx, 1)
+
+    if (ep.showTmdbId) {
+      let showIdx = findIndex(data.shows, s => s.tmdbId == ep.showTmdbId)
+      let { current: { season, episode } } = data.shows[showIdx]
+
+      let show = await tmdb.getTv(data.tmdbApiKey, ep.showTmdbId!)
+      let next = await tmdb.nextEpisodeForShow(data.tmdbApiKey, show.id, season, episode)
+
+      data.shows[showIdx].current.season = next.season
+      data.shows[showIdx].current.episode = next.number
+
+      data.watchList.push(
+        appData.watchListItemFromShow(show.id, show.name, next.season, next.number)
+      )
+    }
 
     await appData.saveData(CONFIG_PATH, data)
   })
 
 program.parse(process.argv)
-

@@ -78,9 +78,11 @@ export async function nextEpisodeForShow(
   if (season.episode_count <= currentEpisode) {
     currentSeason++
     currentEpisode = 0
+  } else {
+    currentEpisode++
   }
 
-  let uri = tmdbBase(apiKey, `tv/${tmdbId}/seasons/${currentSeason}`)
+  let uri = tmdbBase(apiKey, `tv/${tmdbId}/season/${currentSeason}`)
   const resp = await fetch(uri.toString())
   if (!resp.ok) throw new Error('Response not ok!')
   let seasonJson: TvSeason = await resp.json()
