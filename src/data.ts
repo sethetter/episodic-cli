@@ -23,6 +23,7 @@ export interface TvShow {
 
 interface WatchItem {
   showTmdbId?: number,
+  airDate?: string,
   name: string,
 }
 
@@ -60,10 +61,12 @@ export function watchListItemFromShow(
   name: string,
   season: number,
   episode: number,
+  airDate?: string,
 ): WatchItem {
   const pad = (n: number): string => padStart(n.toString(), 2, '0')
   return {
     showTmdbId: tmdbId,
+    airDate: airDate,
     name: `${name} (S${pad(season)}E${pad(episode)})`
   }
 }

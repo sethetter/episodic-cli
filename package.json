@@ -9,6 +9,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
+    "prestart": "npm run build",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build"
@@ -16,7 +17,7 @@
   "bin": {
     "episodic": "./bin/episodic"
   },
-  "author": "Seth Etter <mail@sethetter.com>",
+  "author": "Seth Etter <sethetter@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/commander": "^2.12.2",

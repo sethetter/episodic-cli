@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('episodic-cli/dist')()
+require("../dist/index")();
