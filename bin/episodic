@@ -1,2 +1,12 @@
 #!/usr/bin/env node
-require("../dist/index")();
+const path = require("path");
+const fs = require("fs");
+
+const localPath = path.join(__dirname, "../dist/index.js");
+fs.exists(localPath, (exists) => {
+  if (exists) {
+    require(localPath)();
+  } else {
+    require("episodic-cli")();
+  }
+});
