@@ -1,7 +1,7 @@
 import { program } from "commander";
 import { uniqBy, filter, findIndex } from "lodash";
 import * as path from "path";
-import * as TMDB from "./tmdb";
+import * as TMDB from "./services/tmdb";
 import * as Data from "./data/index";
 
 const CONFIG_PATH = path.join(process.env.HOME || "", ".episodic.json");
